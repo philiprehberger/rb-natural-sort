@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'ostruct'
 require 'philiprehberger/natural_sort'
 
 RSpec.configure do |config|
