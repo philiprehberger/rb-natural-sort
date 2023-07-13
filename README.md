@@ -107,6 +107,33 @@ Philiprehberger::NaturalSort.max(["file10", "file2", "file1"])
 # => "file10"
 ```
 
+### Sort Key for Built-in Methods
+
+Use `natural_key` with Ruby's standard `sort_by`, `min_by`, `max_by`, `group_by`, and other Enumerable methods:
+
+```ruby
+files = ["file10.txt", "file2.txt", "file1.txt"]
+files.sort_by { |f| Philiprehberger::NaturalSort.natural_key(f) }
+# => ["file1.txt", "file2.txt", "file10.txt"]
+
+files.min_by { |f| Philiprehberger::NaturalSort.natural_key(f) }
+# => "file1.txt"
+```
+
+### Stable Sort with Block
+
+Preserves original order for elements whose block values compare as equal:
+
+```ruby
+items = [
+  { name: "file1", id: "a" },
+  { name: "FILE1", id: "b" },
+  { name: "file2", id: "c" }
+]
+sorted = Philiprehberger::NaturalSort.sort_by_stable(items) { |x| x[:name] }
+# => [{ name: "file1", id: "a" }, { name: "FILE1", id: "b" }, { name: "file2", id: "c" }]
+```
+
 ### Case-Sensitive Mode
 
 ```ruby
@@ -125,6 +152,8 @@ Philiprehberger::NaturalSort.sort(["Banana", "apple"], case_sensitive: true)
 | `NaturalSort.max(array, case_sensitive: false)` | Find the naturally largest element |
 | `NaturalSort.compare(a, b, case_sensitive: false)` | Compare two strings, returns -1, 0, or 1 |
 | `NaturalSort.comparator(case_sensitive: false)` | Returns a reusable comparison Proc |
+| `NaturalSort.natural_key(str, case_sensitive: false)` | Returns a sort key for use with `sort_by`, `min_by`, etc. |
+| `NaturalSort.sort_by_stable(array, case_sensitive: false) { \|x\| ... }` | Stable sort by block result preserving order for equal elements |
 | `array.sort_naturally_by { \|x\| ... }` | Sort array by block result (via `ArrayRefinement`) |
 
 ## Development

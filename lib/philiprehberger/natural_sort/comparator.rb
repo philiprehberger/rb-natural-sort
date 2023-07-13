@@ -131,6 +131,38 @@ module Philiprehberger
       array.max { |a, b| compare(a, b, case_sensitive: case_sensitive) }
     end
 
+    # Returns a sort key array usable with Ruby's built-in sort_by, min_by, max_by, etc.
+    #
+    # The key is an array of [type_flag, value] pairs where type_flag ensures
+    # correct ordering between numeric and string chunks (numbers sort before strings).
+    #
+    # @param str [String, nil] the string to generate a key for
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [Array] a comparable sort key
+    def self.natural_key(str, case_sensitive: false)
+      return [[-1, '']] if str.nil?
+
+      tokens = tokenize(str.to_s, case_sensitive: case_sensitive)
+      tokens.map do |chunk|
+        chunk.is_a?(Integer) ? [0, chunk] : [1, chunk]
+      end
+    end
+
+    # Stable sort by block result, preserving original order for equal elements.
+    #
+    # @param array [Array] the array to sort
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @yield [element] block that returns the string to compare
+    # @return [Array] a new sorted array with stable ordering
+    def self.sort_by_stable(array, case_sensitive: false, &block)
+      array.each_with_index
+           .sort_by do |element, index|
+        key_str = block.call(element)
+        [natural_key(key_str, case_sensitive: case_sensitive), index]
+      end
+           .map(&:first)
+    end
+
     # Refinement that adds sort_naturally_by to Array.
     #
     # Usage:

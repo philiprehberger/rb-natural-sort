@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-04-11
+
+### Added
+- `natural_key` method for use with Ruby's built-in `sort_by`, `min_by`, `max_by`, and other Enumerable methods
+- `sort_by_stable` for stable sorting with a key extractor block, preserving original order for equal elements
+
+### Fixed
+- Bug report template: add reproduction placeholder and mark gem version as required
+- Feature request template: add proposed API placeholder
+
 ## [0.3.1] - 2026-04-08
 
 ### Changed

@@ -14,6 +14,11 @@ body:
     attributes:
       label: Steps to reproduce
       description: Minimal code or steps to reproduce the issue
+      placeholder: |
+        ```ruby
+        require "philiprehberger/natural_sort"
+        # steps to reproduce
+        ```
     validations:
       required: true
   - type: textarea
@@ -34,9 +39,9 @@ body:
     id: gem-version
     attributes:
       label: Gem version
-      placeholder: "e.g., 0.3.0"
+      placeholder: "e.g., 0.4.0"
     validations:
-      required: false
+      required: true
   - type: input
     id: ruby-version
     attributes:
