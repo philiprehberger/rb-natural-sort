@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-04-14
+
+### Added
+- `ignore_case:` keyword parameter on `sort` and `sort_by` — when true, downcases sort keys before comparison
+- `group_by_prefix` method to split strings at the first digit boundary and group by non-numeric prefix
+- `collate` method as a spaceship-style comparator returning -1, 0, or 1
+
 ## [0.4.0] - 2026-04-11
 
 ### Added

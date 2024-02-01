@@ -77,9 +77,11 @@ module Philiprehberger
     # @param array [Array<String, nil>] the array to sort
     # @param case_sensitive [Boolean] whether text comparison is case-sensitive
     # @param reverse [Boolean] when true, reverses the natural order
+    # @param ignore_case [Boolean] when true, downcases sort keys before comparison
     # @return [Array<String, nil>] a new sorted array
-    def self.sort(array, case_sensitive: false, reverse: false)
-      result = array.sort { |a, b| compare(a, b, case_sensitive: case_sensitive) }
+    def self.sort(array, case_sensitive: false, reverse: false, ignore_case: false)
+      effective_case_sensitive = ignore_case ? false : case_sensitive
+      result = array.sort { |a, b| compare(a, b, case_sensitive: effective_case_sensitive) }
       reverse ? result.reverse : result
     end
 
@@ -88,10 +90,12 @@ module Philiprehberger
     # @param array [Array] the array to sort
     # @param case_sensitive [Boolean] whether text comparison is case-sensitive
     # @param reverse [Boolean] when true, reverses the natural order
+    # @param ignore_case [Boolean] when true, downcases sort keys before comparison
     # @yield [element] block that returns the string to compare
     # @return [Array] a new sorted array
-    def self.sort_by(array, case_sensitive: false, reverse: false, &block)
-      result = array.sort { |a, b| compare(block.call(a), block.call(b), case_sensitive: case_sensitive) }
+    def self.sort_by(array, case_sensitive: false, reverse: false, ignore_case: false, &block)
+      effective_case_sensitive = ignore_case ? false : case_sensitive
+      result = array.sort { |a, b| compare(block.call(a), block.call(b), case_sensitive: effective_case_sensitive) }
       reverse ? result.reverse : result
     end
 
@@ -161,6 +165,44 @@ module Philiprehberger
         [natural_key(key_str, case_sensitive: case_sensitive), index]
       end
            .map(&:first)
+    end
+
+    # Spaceship-style comparator returning -1, 0, or 1.
+    #
+    # Suitable for use with Array#sort:
+    #   array.sort { |a, b| NaturalSort.collate(a, b) }
+    #
+    # @param a [String, nil] first string
+    # @param b [String, nil] second string
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [Integer] -1, 0, or 1
+    def self.collate(a, b, case_sensitive: false)
+      compare(a, b, case_sensitive: case_sensitive)
+    end
+
+    # Splits each string at the first digit boundary, groups by the non-numeric prefix.
+    # Each group's values are naturally sorted.
+    #
+    # @param array [Array<String>] the array to group
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [Hash<String, Array<String>>] prefix => naturally sorted values
+    def self.group_by_prefix(array, case_sensitive: false)
+      groups = {}
+
+      array.each do |str|
+        s = str.to_s
+        match = s.match(/\A([^\d]*)/)
+        prefix = match ? match[1] : ''
+
+        groups[prefix] ||= []
+        groups[prefix] << str
+      end
+
+      groups.each_value do |values|
+        values.replace(sort(values, case_sensitive: case_sensitive))
+      end
+
+      groups
     end
 
     # Refinement that adds sort_naturally_by to Array.
