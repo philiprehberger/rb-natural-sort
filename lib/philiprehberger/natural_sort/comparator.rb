@@ -180,6 +180,18 @@ module Philiprehberger
       compare(a, b, case_sensitive: case_sensitive)
     end
 
+    # Returns true if value falls within the natural sort range [min, max] inclusive.
+    #
+    # @param value [String] the value to check
+    # @param min [String] the lower bound (inclusive)
+    # @param max [String] the upper bound (inclusive)
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [Boolean] true if value is between min and max in natural sort order
+    def self.between?(value, min, max, case_sensitive: false)
+      compare(min, value, case_sensitive: case_sensitive) <= 0 &&
+        compare(value, max, case_sensitive: case_sensitive) <= 0
+    end
+
     # Splits each string at the first digit boundary, groups by the non-numeric prefix.
     # Each group's values are naturally sorted.
     #

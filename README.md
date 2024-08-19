@@ -162,6 +162,21 @@ Philiprehberger::NaturalSort.group_by_prefix(["file1", "file2", "file10", "img3"
 # => { "file" => ["file1", "file2", "file10"], "img" => ["img3", "img20"] }
 ```
 
+### Range Checking
+
+Check if a value falls within a natural sort range (inclusive):
+
+```ruby
+Philiprehberger::NaturalSort.between?("v1.5", "v1.0", "v2.0")
+# => true
+
+Philiprehberger::NaturalSort.between?("v3.0", "v1.0", "v2.0")
+# => false
+
+Philiprehberger::NaturalSort.between?("v1.0", "v1.0", "v2.0")
+# => true (boundaries are inclusive)
+```
+
 ### Collate Comparator
 
 Spaceship-style comparator returning -1, 0, or 1. Suitable for use with `Array#sort`:
@@ -185,6 +200,7 @@ Spaceship-style comparator returning -1, 0, or 1. Suitable for use with `Array#s
 | `NaturalSort.comparator(case_sensitive: false)` | Returns a reusable comparison Proc |
 | `NaturalSort.natural_key(str, case_sensitive: false)` | Returns a sort key for use with `sort_by`, `min_by`, etc. |
 | `NaturalSort.sort_by_stable(array, case_sensitive: false) { \|x\| ... }` | Stable sort by block result preserving order for equal elements |
+| `NaturalSort.between?(value, min, max, case_sensitive: false)` | Check if value falls within [min, max] in natural sort order |
 | `NaturalSort.group_by_prefix(array, case_sensitive: false)` | Group strings by non-numeric prefix with naturally sorted values |
 | `array.sort_naturally_by { \|x\| ... }` | Sort array by block result (via `ArrayRefinement`) |
 

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-04-15
+
+### Added
+- `between?` method to check if a value falls within a natural sort range [min, max] inclusive
+
 ## [0.5.0] - 2026-04-14
 
 ### Added
