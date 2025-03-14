@@ -537,6 +537,41 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe '.sort_index' do
+    it 'returns original indices in natural sort order' do
+      input = %w[file10 file2 file1]
+      expect(described_class.sort_index(input)).to eq([2, 1, 0])
+    end
+
+    it 'returns indices for image names with multiple numbers' do
+      input = %w[img12 img2 img1 img22]
+      expect(described_class.sort_index(input)).to eq([2, 1, 0, 3])
+    end
+
+    it 'is case insensitive by default' do
+      input = %w[Banana apple cherry]
+      expect(described_class.sort_index(input)).to eq([1, 0, 2])
+    end
+
+    it 'supports case sensitive sorting' do
+      input = %w[banana Apple cherry]
+      expect(described_class.sort_index(input, case_sensitive: true)).to eq([1, 0, 2])
+    end
+
+    it 'supports reverse order' do
+      input = %w[file10 file2 file1]
+      expect(described_class.sort_index(input, reverse: true)).to eq([0, 1, 2])
+    end
+
+    it 'returns empty array for empty input' do
+      expect(described_class.sort_index([])).to eq([])
+    end
+
+    it 'returns [0] for single element' do
+      expect(described_class.sort_index(%w[only])).to eq([0])
+    end
+  end
+
   describe '.comparator' do
     it 'returns a Proc' do
       expect(described_class.comparator).to be_a(Proc)

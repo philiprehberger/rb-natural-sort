@@ -217,6 +217,21 @@ module Philiprehberger
       groups
     end
 
+    # Returns an array of original indices representing the natural-sort permutation.
+    #
+    # @param array [Array<String, nil>] the array to sort
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @param reverse [Boolean] when true, reverses the natural order
+    # @return [Array<Integer>] indices into the original array in natural sort order
+    def self.sort_index(array, case_sensitive: false, reverse: false)
+      return [] if array.empty?
+
+      result = array.each_with_index
+                    .sort { |(a, _), (b, _)| compare(a, b, case_sensitive: case_sensitive) }
+                    .map(&:last)
+      reverse ? result.reverse : result
+    end
+
     # Refinement that adds sort_naturally_by to Array.
     #
     # Usage:

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-04-16
+
+### Added
+- `sort_index` method returning original indices in natural sort order, with `case_sensitive:` and `reverse:` keyword support
+
 ## [0.6.0] - 2026-04-15
 
 ### Added
