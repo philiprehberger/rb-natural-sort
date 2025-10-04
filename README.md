@@ -201,6 +201,18 @@ Spaceship-style comparator returning -1, 0, or 1. Suitable for use with `Array#s
 # => ["file1", "file2", "file10"]
 ```
 
+### Dedup with natural equality
+
+Remove duplicates where two strings compare equal under natural ordering (e.g. `"a1"` and `"a01"`). Preserves first-occurrence order:
+
+```ruby
+Philiprehberger::NaturalSort.uniq(["a1", "A1", "a01"])
+# => ["a1"]
+
+Philiprehberger::NaturalSort.uniq(["a1", "A1", "a01"], case_sensitive: true)
+# => ["a1", "A1"]
+```
+
 ## API
 
 | Method | Description |
@@ -218,6 +230,7 @@ Spaceship-style comparator returning -1, 0, or 1. Suitable for use with `Array#s
 | `NaturalSort.between?(value, min, max, case_sensitive: false)` | Check if value falls within [min, max] in natural sort order |
 | `NaturalSort.sort_index(array, case_sensitive: false, reverse: false)` | Return original indices in natural sort order |
 | `NaturalSort.group_by_prefix(array, case_sensitive: false)` | Group strings by non-numeric prefix with naturally sorted values |
+| `NaturalSort.uniq(array, case_sensitive: false)` | Deduplicate preserving first-occurrence order using natural equality |
 | `array.sort_naturally_by { \|x\| ... }` | Sort array by block result (via `ArrayRefinement`) |
 
 ## Development

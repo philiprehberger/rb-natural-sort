@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-04-18
+
+### Added
+- `NaturalSort.uniq(array, case_sensitive: false)` — deduplicates preserving first-occurrence order, using natural-comparison equality so values like `'a1'` / `'A1'` / `'a01'` collapse
+
 ## [0.7.0] - 2026-04-16
 
 ### Added
