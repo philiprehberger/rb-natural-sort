@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ['me@philiprehberger.com']
   spec.summary = 'Human-friendly natural sorting — "file2" before "file10"'
   spec.description = 'Natural sort for strings containing numbers. Splits strings into text and numeric chunks ' \
-                       'and compares them the way humans expect: "file2" sorts before "file10".'
+                     'and compares them the way humans expect: "file2" sorts before "file10".'
   spec.homepage = 'https://philiprehberger.com/open-source-packages/ruby/philiprehberger-natural_sort'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 3.1.0'
