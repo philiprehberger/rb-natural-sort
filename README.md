@@ -59,6 +59,38 @@ cmp = Philiprehberger::NaturalSort.comparator
 # => ["file1", "file2", "file10"]
 ```
 
+### Reverse Sorting
+
+```ruby
+Philiprehberger::NaturalSort.sort(["file10", "file2", "file1"], reverse: true)
+# => ["file10", "file2", "file1"]
+
+items = [{ name: "img10" }, { name: "img2" }, { name: "img1" }]
+sorted = Philiprehberger::NaturalSort.sort_by(items, reverse: true) { |x| x[:name] }
+# => [{ name: "img10" }, { name: "img2" }, { name: "img1" }]
+```
+
+### Stable Sorting
+
+Preserves original order for elements that compare as equal:
+
+```ruby
+Philiprehberger::NaturalSort.sort_stable(["file1", "FILE1", "file2"])
+# => ["file1", "FILE1", "file2"]
+```
+
+### Min and Max
+
+Find the naturally smallest or largest element without a full sort:
+
+```ruby
+Philiprehberger::NaturalSort.min(["file10", "file2", "file1"])
+# => "file1"
+
+Philiprehberger::NaturalSort.max(["file10", "file2", "file1"])
+# => "file10"
+```
+
 ### Case-Sensitive Mode
 
 ```ruby
@@ -70,8 +102,11 @@ Philiprehberger::NaturalSort.sort(["Banana", "apple"], case_sensitive: true)
 
 | Method | Description |
 |--------|-------------|
-| `NaturalSort.sort(array, case_sensitive: false)` | Sort an array of strings in natural order |
-| `NaturalSort.sort_by(array, case_sensitive: false) { \|x\| ... }` | Sort by block result in natural order |
+| `NaturalSort.sort(array, case_sensitive: false, reverse: false)` | Sort an array of strings in natural order |
+| `NaturalSort.sort_by(array, case_sensitive: false, reverse: false) { \|x\| ... }` | Sort by block result in natural order |
+| `NaturalSort.sort_stable(array, case_sensitive: false)` | Stable sort preserving original order for equal elements |
+| `NaturalSort.min(array, case_sensitive: false)` | Find the naturally smallest element |
+| `NaturalSort.max(array, case_sensitive: false)` | Find the naturally largest element |
 | `NaturalSort.compare(a, b, case_sensitive: false)` | Compare two strings, returns -1, 0, or 1 |
 | `NaturalSort.comparator(case_sensitive: false)` | Returns a reusable comparison Proc |
 

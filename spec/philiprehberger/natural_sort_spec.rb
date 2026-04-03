@@ -85,6 +85,142 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe '.sort with reverse' do
+    it 'sorts strings in reverse natural order' do
+      input = %w[cherry apple banana]
+      expect(described_class.sort(input, reverse: true)).to eq(%w[cherry banana apple])
+    end
+
+    it 'sorts numbers in reverse natural order' do
+      input = %w[100 20 3]
+      expect(described_class.sort(input, reverse: true)).to eq(%w[100 20 3])
+    end
+
+    it 'sorts mixed strings in reverse natural order' do
+      input = %w[file10 file2 file1]
+      expect(described_class.sort(input, reverse: true)).to eq(%w[file10 file2 file1])
+    end
+
+    it 'handles empty array with reverse' do
+      expect(described_class.sort([], reverse: true)).to eq([])
+    end
+
+    it 'handles single element with reverse' do
+      expect(described_class.sort(%w[only], reverse: true)).to eq(%w[only])
+    end
+
+    it 'handles nil values with reverse' do
+      input = ['b', nil, 'a']
+      expect(described_class.sort(input, reverse: true)).to eq(['b', 'a', nil])
+    end
+  end
+
+  describe '.sort_by with reverse' do
+    it 'sorts by block result in reverse natural order' do
+      items = [
+        { name: 'item1' },
+        { name: 'item10' },
+        { name: 'item2' }
+      ]
+      result = described_class.sort_by(items, reverse: true) { |x| x[:name] }
+      expect(result.map { |x| x[:name] }).to eq(%w[item10 item2 item1])
+    end
+  end
+
+  describe '.sort_stable' do
+    it 'preserves original order for equal elements' do
+      input = %w[file1 FILE1 file2]
+      result = described_class.sort_stable(input)
+      expect(result).to eq(%w[file1 FILE1 file2])
+    end
+
+    it 'preserves order among case-insensitive duplicates' do
+      input = %w[Banana banana BANANA apple]
+      result = described_class.sort_stable(input)
+      expect(result).to eq(%w[apple Banana banana BANANA])
+    end
+
+    it 'sorts naturally when no ties exist' do
+      input = %w[file10 file2 file1]
+      result = described_class.sort_stable(input)
+      expect(result).to eq(%w[file1 file2 file10])
+    end
+
+    it 'handles empty array' do
+      expect(described_class.sort_stable([])).to eq([])
+    end
+
+    it 'handles single element' do
+      expect(described_class.sort_stable(%w[only])).to eq(%w[only])
+    end
+
+    it 'handles nil values' do
+      input = ['b', nil, 'a']
+      result = described_class.sort_stable(input)
+      expect(result).to eq([nil, 'a', 'b'])
+    end
+  end
+
+  describe '.min' do
+    it 'finds the naturally smallest element' do
+      input = %w[file10 file2 file1]
+      expect(described_class.min(input)).to eq('file1')
+    end
+
+    it 'finds the smallest numeric string' do
+      input = %w[100 20 3]
+      expect(described_class.min(input)).to eq('3')
+    end
+
+    it 'returns nil for empty array' do
+      expect(described_class.min([])).to be_nil
+    end
+
+    it 'returns the element for single-element array' do
+      expect(described_class.min(%w[only])).to eq('only')
+    end
+
+    it 'handles nil values' do
+      input = ['b', nil, 'a']
+      expect(described_class.min(input)).to be_nil
+    end
+
+    it 'is case insensitive by default' do
+      input = %w[Banana apple Cherry]
+      expect(described_class.min(input)).to eq('apple')
+    end
+  end
+
+  describe '.max' do
+    it 'finds the naturally largest element' do
+      input = %w[file10 file2 file1]
+      expect(described_class.max(input)).to eq('file10')
+    end
+
+    it 'finds the largest numeric string' do
+      input = %w[100 20 3]
+      expect(described_class.max(input)).to eq('100')
+    end
+
+    it 'returns nil for empty array' do
+      expect(described_class.max([])).to be_nil
+    end
+
+    it 'returns the element for single-element array' do
+      expect(described_class.max(%w[only])).to eq('only')
+    end
+
+    it 'handles nil values' do
+      input = ['b', nil, 'a']
+      expect(described_class.max(input)).to eq('b')
+    end
+
+    it 'is case insensitive by default' do
+      input = %w[Banana apple Cherry]
+      expect(described_class.max(input)).to eq('Cherry')
+    end
+  end
+
   describe '.compare' do
     it 'returns -1 when a sorts before b' do
       expect(described_class.compare('file1', 'file2')).to eq(-1)

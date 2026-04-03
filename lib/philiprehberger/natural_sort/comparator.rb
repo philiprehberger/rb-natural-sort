@@ -76,19 +76,59 @@ module Philiprehberger
     #
     # @param array [Array<String, nil>] the array to sort
     # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @param reverse [Boolean] when true, reverses the natural order
     # @return [Array<String, nil>] a new sorted array
-    def self.sort(array, case_sensitive: false)
-      array.sort { |a, b| compare(a, b, case_sensitive: case_sensitive) }
+    def self.sort(array, case_sensitive: false, reverse: false)
+      result = array.sort { |a, b| compare(a, b, case_sensitive: case_sensitive) }
+      reverse ? result.reverse : result
     end
 
     # Sorts an array by the natural order of values returned by the block.
     #
     # @param array [Array] the array to sort
     # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @param reverse [Boolean] when true, reverses the natural order
     # @yield [element] block that returns the string to compare
     # @return [Array] a new sorted array
-    def self.sort_by(array, case_sensitive: false, &block)
-      array.sort { |a, b| compare(block.call(a), block.call(b), case_sensitive: case_sensitive) }
+    def self.sort_by(array, case_sensitive: false, reverse: false, &block)
+      result = array.sort { |a, b| compare(block.call(a), block.call(b), case_sensitive: case_sensitive) }
+      reverse ? result.reverse : result
+    end
+
+    # Stable sort that preserves original order for equal elements.
+    #
+    # @param array [Array<String, nil>] the array to sort
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [Array<String, nil>] a new sorted array with stable ordering
+    def self.sort_stable(array, case_sensitive: false)
+      array.each_with_index
+           .sort_by do |element, index|
+        [tokenize(element.nil? ? '' : element.to_s, case_sensitive: case_sensitive), element.nil? ? 0 : 1,
+         index]
+      end
+           .map(&:first)
+    end
+
+    # Finds the naturally smallest element without full sort.
+    #
+    # @param array [Array<String, nil>] the array to search
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [String, nil] the naturally smallest element, or nil for empty arrays
+    def self.min(array, case_sensitive: false)
+      return nil if array.empty?
+
+      array.min { |a, b| compare(a, b, case_sensitive: case_sensitive) }
+    end
+
+    # Finds the naturally largest element without full sort.
+    #
+    # @param array [Array<String, nil>] the array to search
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [String, nil] the naturally largest element, or nil for empty arrays
+    def self.max(array, case_sensitive: false)
+      return nil if array.empty?
+
+      array.max { |a, b| compare(a, b, case_sensitive: case_sensitive) }
     end
   end
 end

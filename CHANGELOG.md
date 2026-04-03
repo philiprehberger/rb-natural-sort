@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-04-03
+
+### Added
+- Reverse sort option via `reverse:` parameter on `sort` and `sort_by`
+- Stable sort via `sort_stable` preserving original order for equal elements
+- `min` and `max` methods for finding extremes without full sort
+
 ## [0.1.4] - 2026-03-31
 
 ### Added
