@@ -41,6 +41,22 @@ sorted = Philiprehberger::NaturalSort.sort_by(items) { |x| x[:name] }
 # => [{ name: "img1" }, { name: "img2" }, { name: "img10" }]
 ```
 
+### Sorting with a Refinement
+
+Use the `ArrayRefinement` to call `sort_naturally_by` directly on arrays:
+
+```ruby
+using Philiprehberger::NaturalSort::ArrayRefinement
+
+items = [
+  OpenStruct.new(name: "img10"),
+  OpenStruct.new(name: "img2"),
+  OpenStruct.new(name: "img1")
+]
+items.sort_naturally_by { |x| x.name }
+# => [#<OpenStruct name="img1">, #<OpenStruct name="img2">, #<OpenStruct name="img10">]
+```
+
 ### Comparing Two Strings
 
 ```ruby
@@ -109,6 +125,7 @@ Philiprehberger::NaturalSort.sort(["Banana", "apple"], case_sensitive: true)
 | `NaturalSort.max(array, case_sensitive: false)` | Find the naturally largest element |
 | `NaturalSort.compare(a, b, case_sensitive: false)` | Compare two strings, returns -1, 0, or 1 |
 | `NaturalSort.comparator(case_sensitive: false)` | Returns a reusable comparison Proc |
+| `array.sort_naturally_by { \|x\| ... }` | Sort array by block result (via `ArrayRefinement`) |
 
 ## Development
 

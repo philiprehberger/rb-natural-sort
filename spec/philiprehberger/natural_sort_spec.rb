@@ -250,6 +250,51 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe 'ArrayRefinement#sort_naturally_by' do
+    using Philiprehberger::NaturalSort::ArrayRefinement
+
+    it 'sorts by block result in natural order' do
+      items = [
+        Struct.new(:name).new('item10'),
+        Struct.new(:name).new('item2'),
+        Struct.new(:name).new('item1')
+      ]
+      result = items.sort_naturally_by(&:name)
+      expect(result.map(&:name)).to eq(%w[item1 item2 item10])
+    end
+
+    it 'supports case sensitive sorting' do
+      items = [
+        Struct.new(:name).new('Item2'),
+        Struct.new(:name).new('item1'),
+        Struct.new(:name).new('Item10')
+      ]
+      result = items.sort_naturally_by(case_sensitive: true, &:name)
+      expect(result.map(&:name)).to eq(%w[Item2 Item10 item1])
+    end
+
+    it 'supports reverse sorting' do
+      items = [
+        Struct.new(:name).new('item1'),
+        Struct.new(:name).new('item10'),
+        Struct.new(:name).new('item2')
+      ]
+      result = items.sort_naturally_by(reverse: true, &:name)
+      expect(result.map(&:name)).to eq(%w[item10 item2 item1])
+    end
+
+    it 'handles empty arrays' do
+      result = [].sort_naturally_by { |x| x }
+      expect(result).to eq([])
+    end
+
+    it 'handles single element arrays' do
+      items = [Struct.new(:name).new('only')]
+      result = items.sort_naturally_by(&:name)
+      expect(result.map(&:name)).to eq(%w[only])
+    end
+  end
+
   describe '.comparator' do
     it 'returns a Proc' do
       expect(described_class.comparator).to be_a(Proc)

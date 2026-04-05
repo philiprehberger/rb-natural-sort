@@ -130,5 +130,24 @@ module Philiprehberger
 
       array.max { |a, b| compare(a, b, case_sensitive: case_sensitive) }
     end
+
+    # Refinement that adds sort_naturally_by to Array.
+    #
+    # Usage:
+    #   using Philiprehberger::NaturalSort::ArrayRefinement
+    #   array.sort_naturally_by { |item| item.name }
+    module ArrayRefinement
+      refine Array do
+        # Sorts the array by the natural order of values returned by the block.
+        #
+        # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+        # @param reverse [Boolean] when true, reverses the natural order
+        # @yield [element] block that returns the string to compare
+        # @return [Array] a new sorted array
+        def sort_naturally_by(case_sensitive: false, reverse: false, &block)
+          Philiprehberger::NaturalSort.sort_by(self, case_sensitive: case_sensitive, reverse: reverse, &block)
+        end
+      end
+    end
   end
 end
