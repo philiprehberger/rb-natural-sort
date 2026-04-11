@@ -295,6 +295,77 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe '.natural_key' do
+    it 'returns comparable keys that sort strings naturally' do
+      sorted = %w[file10 file2 file1].sort_by { |s| described_class.natural_key(s) }
+      expect(sorted).to eq(%w[file1 file2 file10])
+    end
+
+    it 'works with min_by' do
+      result = %w[file10 file2 file1].min_by { |s| described_class.natural_key(s) }
+      expect(result).to eq('file1')
+    end
+
+    it 'works with max_by' do
+      result = %w[file10 file2 file1].max_by { |s| described_class.natural_key(s) }
+      expect(result).to eq('file10')
+    end
+
+    it 'handles nil' do
+      key = described_class.natural_key(nil)
+      expect(key).to eq([[-1, '']])
+    end
+
+    it 'is case insensitive by default' do
+      sorted = %w[Banana apple Cherry].sort_by { |s| described_class.natural_key(s) }
+      expect(sorted).to eq(%w[apple Banana Cherry])
+    end
+
+    it 'supports case sensitive mode' do
+      sorted = %w[banana Apple cherry].sort_by { |s| described_class.natural_key(s, case_sensitive: true) }
+      expect(sorted).to eq(%w[Apple banana cherry])
+    end
+
+    it 'sorts numbers before strings in mixed chunks' do
+      key_num = described_class.natural_key('123')
+      key_str = described_class.natural_key('abc')
+      expect(key_num <=> key_str).to eq(-1)
+    end
+  end
+
+  describe '.sort_by_stable' do
+    it 'preserves original order for equal block values' do
+      items = [
+        { name: 'file1', id: 'a' },
+        { name: 'FILE1', id: 'b' },
+        { name: 'file2', id: 'c' }
+      ]
+      result = described_class.sort_by_stable(items) { |x| x[:name] }
+      expect(result.map { |x| x[:id] }).to eq(%w[a b c])
+    end
+
+    it 'sorts by block result in natural order' do
+      items = [
+        { name: 'item10' },
+        { name: 'item2' },
+        { name: 'item1' }
+      ]
+      result = described_class.sort_by_stable(items) { |x| x[:name] }
+      expect(result.map { |x| x[:name] }).to eq(%w[item1 item2 item10])
+    end
+
+    it 'supports case sensitive mode' do
+      items = [{ name: 'Item2' }, { name: 'item1' }, { name: 'Item10' }]
+      result = described_class.sort_by_stable(items, case_sensitive: true) { |x| x[:name] }
+      expect(result.map { |x| x[:name] }).to eq(%w[Item2 Item10 item1])
+    end
+
+    it 'handles empty array' do
+      result = described_class.sort_by_stable([]) { |x| x }
+      expect(result).to eq([])
+    end
+  end
+
   describe '.comparator' do
     it 'returns a Proc' do
       expect(described_class.comparator).to be_a(Proc)
