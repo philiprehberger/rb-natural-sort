@@ -366,6 +366,134 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe '.sort with ignore_case' do
+    it 'sorts case-insensitively when ignore_case is true' do
+      input = %w[Banana apple Cherry]
+      expect(described_class.sort(input, ignore_case: true)).to eq(%w[apple Banana Cherry])
+    end
+
+    it 'overrides case_sensitive when ignore_case is true' do
+      input = %w[Banana apple Cherry]
+      result = described_class.sort(input, case_sensitive: true, ignore_case: true)
+      expect(result).to eq(%w[apple Banana Cherry])
+    end
+
+    it 'does not affect default behavior when ignore_case is false' do
+      input = %w[Banana apple Cherry]
+      expect(described_class.sort(input, ignore_case: false)).to eq(%w[apple Banana Cherry])
+    end
+
+    it 'sorts numbered strings case-insensitively with ignore_case' do
+      input = %w[File10 file2 FILE1]
+      result = described_class.sort(input, ignore_case: true)
+      expect(result).to eq(%w[FILE1 file2 File10])
+    end
+
+    it 'respects case_sensitive when ignore_case is false' do
+      input = %w[banana Apple cherry]
+      result = described_class.sort(input, case_sensitive: true, ignore_case: false)
+      expect(result).to eq(%w[Apple banana cherry])
+    end
+  end
+
+  describe '.sort_by with ignore_case' do
+    it 'sorts by block result case-insensitively when ignore_case is true' do
+      items = [{ name: 'Item10' }, { name: 'item2' }, { name: 'ITEM1' }]
+      result = described_class.sort_by(items, ignore_case: true) { |x| x[:name] }
+      expect(result.map { |x| x[:name] }).to eq(%w[ITEM1 item2 Item10])
+    end
+
+    it 'overrides case_sensitive when ignore_case is true in sort_by' do
+      items = [{ name: 'Banana' }, { name: 'apple' }, { name: 'Cherry' }]
+      result = described_class.sort_by(items, case_sensitive: true, ignore_case: true) { |x| x[:name] }
+      expect(result.map { |x| x[:name] }).to eq(%w[apple Banana Cherry])
+    end
+  end
+
+  describe '.group_by_prefix' do
+    it 'groups strings by their non-numeric prefix' do
+      input = %w[file1 file2 file10 img3 img20]
+      result = described_class.group_by_prefix(input)
+      expect(result).to eq({
+                             'file' => %w[file1 file2 file10],
+                             'img' => %w[img3 img20]
+                           })
+    end
+
+    it 'naturally sorts values within each group' do
+      input = %w[file10 file2 file1]
+      result = described_class.group_by_prefix(input)
+      expect(result['file']).to eq(%w[file1 file2 file10])
+    end
+
+    it 'handles strings with no prefix (starting with digits)' do
+      input = %w[1abc 2def 10ghi]
+      result = described_class.group_by_prefix(input)
+      expect(result['']).to eq(%w[1abc 2def 10ghi])
+    end
+
+    it 'handles strings with no numbers' do
+      input = %w[cherry apple banana]
+      result = described_class.group_by_prefix(input)
+      expect(result).to eq({
+                             'cherry' => %w[cherry],
+                             'apple' => %w[apple],
+                             'banana' => %w[banana]
+                           })
+    end
+
+    it 'handles empty array' do
+      expect(described_class.group_by_prefix([])).to eq({})
+    end
+
+    it 'handles single element' do
+      result = described_class.group_by_prefix(%w[file1])
+      expect(result).to eq({ 'file' => %w[file1] })
+    end
+
+    it 'handles mixed prefixes with case insensitive sorting' do
+      input = %w[File1 file2 File10]
+      result = described_class.group_by_prefix(input)
+      expect(result['File']).to eq(%w[File1 File10])
+      expect(result['file']).to eq(%w[file2])
+    end
+  end
+
+  describe '.collate' do
+    it 'returns -1 when a sorts before b' do
+      expect(described_class.collate('file1', 'file2')).to eq(-1)
+    end
+
+    it 'returns 1 when a sorts after b' do
+      expect(described_class.collate('file10', 'file2')).to eq(1)
+    end
+
+    it 'returns 0 for equal strings' do
+      expect(described_class.collate('file1', 'file1')).to eq(0)
+    end
+
+    it 'is case insensitive by default' do
+      expect(described_class.collate('File1', 'file1')).to eq(0)
+    end
+
+    it 'supports case_sensitive mode' do
+      result = described_class.collate('File1', 'file1', case_sensitive: true)
+      expect(result).not_to eq(0)
+    end
+
+    it 'can be used with Array#sort' do
+      input = %w[file10 file2 file1]
+      result = input.sort { |a, b| described_class.collate(a, b) }
+      expect(result).to eq(%w[file1 file2 file10])
+    end
+
+    it 'handles nil values' do
+      expect(described_class.collate(nil, 'a')).to eq(-1)
+      expect(described_class.collate('a', nil)).to eq(1)
+      expect(described_class.collate(nil, nil)).to eq(0)
+    end
+  end
+
   describe '.comparator' do
     it 'returns a Proc' do
       expect(described_class.comparator).to be_a(Proc)

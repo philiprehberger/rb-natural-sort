@@ -141,19 +141,51 @@ Philiprehberger::NaturalSort.sort(["Banana", "apple"], case_sensitive: true)
 # => ["Banana", "apple"]
 ```
 
+### Case-Insensitive Sorting
+
+Use `ignore_case: true` to force case-insensitive comparison, overriding `case_sensitive`:
+
+```ruby
+Philiprehberger::NaturalSort.sort(["Banana", "apple", "Cherry"], ignore_case: true)
+# => ["apple", "Banana", "Cherry"]
+
+Philiprehberger::NaturalSort.sort(["Banana", "apple"], case_sensitive: true, ignore_case: true)
+# => ["apple", "Banana"]
+```
+
+### Group by Prefix
+
+Split strings at the first digit boundary and group by the non-numeric prefix. Each group's values are naturally sorted:
+
+```ruby
+Philiprehberger::NaturalSort.group_by_prefix(["file1", "file2", "file10", "img3", "img20"])
+# => { "file" => ["file1", "file2", "file10"], "img" => ["img3", "img20"] }
+```
+
+### Collate Comparator
+
+Spaceship-style comparator returning -1, 0, or 1. Suitable for use with `Array#sort`:
+
+```ruby
+["file10", "file2", "file1"].sort { |a, b| Philiprehberger::NaturalSort.collate(a, b) }
+# => ["file1", "file2", "file10"]
+```
+
 ## API
 
 | Method | Description |
 |--------|-------------|
-| `NaturalSort.sort(array, case_sensitive: false, reverse: false)` | Sort an array of strings in natural order |
-| `NaturalSort.sort_by(array, case_sensitive: false, reverse: false) { \|x\| ... }` | Sort by block result in natural order |
+| `NaturalSort.sort(array, case_sensitive: false, reverse: false, ignore_case: false)` | Sort an array of strings in natural order |
+| `NaturalSort.sort_by(array, case_sensitive: false, reverse: false, ignore_case: false) { \|x\| ... }` | Sort by block result in natural order |
 | `NaturalSort.sort_stable(array, case_sensitive: false)` | Stable sort preserving original order for equal elements |
 | `NaturalSort.min(array, case_sensitive: false)` | Find the naturally smallest element |
 | `NaturalSort.max(array, case_sensitive: false)` | Find the naturally largest element |
 | `NaturalSort.compare(a, b, case_sensitive: false)` | Compare two strings, returns -1, 0, or 1 |
+| `NaturalSort.collate(a, b, case_sensitive: false)` | Spaceship-style comparator returning -1, 0, or 1 |
 | `NaturalSort.comparator(case_sensitive: false)` | Returns a reusable comparison Proc |
 | `NaturalSort.natural_key(str, case_sensitive: false)` | Returns a sort key for use with `sort_by`, `min_by`, etc. |
 | `NaturalSort.sort_by_stable(array, case_sensitive: false) { \|x\| ... }` | Stable sort by block result preserving order for equal elements |
+| `NaturalSort.group_by_prefix(array, case_sensitive: false)` | Group strings by non-numeric prefix with naturally sorted values |
 | `array.sort_naturally_by { \|x\| ... }` | Sort array by block result (via `ArrayRefinement`) |
 
 ## Development
