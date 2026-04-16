@@ -494,6 +494,49 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe '.between?' do
+    it 'returns true when value is within range' do
+      expect(described_class.between?('v1.5', 'v1.0', 'v2.0')).to be true
+    end
+
+    it 'returns false when value is below range' do
+      expect(described_class.between?('v0.5', 'v1.0', 'v2.0')).to be false
+    end
+
+    it 'returns false when value is above range' do
+      expect(described_class.between?('v3.0', 'v1.0', 'v2.0')).to be false
+    end
+
+    it 'returns true when value equals min boundary' do
+      expect(described_class.between?('v1.0', 'v1.0', 'v2.0')).to be true
+    end
+
+    it 'returns true when value equals max boundary' do
+      expect(described_class.between?('v2.0', 'v1.0', 'v2.0')).to be true
+    end
+
+    it 'returns true when min, max, and value are all equal' do
+      expect(described_class.between?('v1.0', 'v1.0', 'v1.0')).to be true
+    end
+
+    it 'is case insensitive by default' do
+      expect(described_class.between?('File5', 'file1', 'file10')).to be true
+    end
+
+    it 'respects case sensitivity when enabled' do
+      result = described_class.between?('file5', 'File1', 'File10', case_sensitive: true)
+      expect(result).to be false
+    end
+
+    it 'works with mixed alphanumeric IDs' do
+      expect(described_class.between?('item7', 'item1', 'item20')).to be true
+    end
+
+    it 'works with purely numeric strings' do
+      expect(described_class.between?('5', '1', '10')).to be true
+    end
+  end
+
   describe '.comparator' do
     it 'returns a Proc' do
       expect(described_class.comparator).to be_a(Proc)
