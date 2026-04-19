@@ -572,6 +572,38 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe '.uniq' do
+    it 'deduplicates using natural equality case-insensitively by default' do
+      expect(described_class.uniq(%w[a1 A1 a01])).to eq(%w[a1])
+    end
+
+    it 'collapses leading-zero numeric duplicates even in case-sensitive mode' do
+      result = described_class.uniq(%w[a1 A1 a01], case_sensitive: true)
+      expect(result).to eq(%w[a1 A1])
+    end
+
+    it 'returns an empty array for empty input' do
+      expect(described_class.uniq([])).to eq([])
+    end
+
+    it 'returns a new array equal to the input when all elements are unique' do
+      input = %w[file1 file2 file10]
+      result = described_class.uniq(input)
+      expect(result).to eq(%w[file1 file2 file10])
+      expect(result).not_to equal(input)
+    end
+
+    it 'preserves first-occurrence order' do
+      expect(described_class.uniq(%w[b a b])).to eq(%w[b a])
+    end
+
+    it 'does not mutate the input array' do
+      input = %w[a1 A1 a01]
+      described_class.uniq(input)
+      expect(input).to eq(%w[a1 A1 a01])
+    end
+  end
+
   describe '.comparator' do
     it 'returns a Proc' do
       expect(described_class.comparator).to be_a(Proc)

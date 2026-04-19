@@ -232,6 +232,22 @@ module Philiprehberger
       reverse ? result.reverse : result
     end
 
+    # Deduplicates an array preserving first-occurrence order, treating elements as
+    # equal when natural comparison returns 0.
+    #
+    # @param array [Array<String, nil>] the array to deduplicate
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [Array<String, nil>] a new array with duplicates removed
+    def self.uniq(array, case_sensitive: false)
+      result = []
+      array.each do |element|
+        next if result.any? { |kept| compare(kept, element, case_sensitive: case_sensitive).zero? }
+
+        result << element
+      end
+      result
+    end
+
     # Refinement that adds sort_naturally_by to Array.
     #
     # Usage:
