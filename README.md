@@ -213,6 +213,19 @@ Philiprehberger::NaturalSort.uniq(["a1", "A1", "a01"], case_sensitive: true)
 # => ["a1", "A1"]
 ```
 
+### Sorting File Paths
+
+Natural-sort an array of paths by their separator-delimited segments. Useful for
+directory listings where `'a/2/x'` should come before `'a/10/x'`:
+
+```ruby
+Philiprehberger::NaturalSort.sort_paths(["a/10/x", "a/2/x", "a/2/y"])
+# => ["a/2/x", "a/2/y", "a/10/x"]
+
+Philiprehberger::NaturalSort.sort_paths(["C:\\docs\\file10", "C:\\docs\\file2"], separator: "\\")
+# => ["C:\\docs\\file2", "C:\\docs\\file10"]
+```
+
 ## API
 
 | Method | Description |
@@ -231,6 +244,7 @@ Philiprehberger::NaturalSort.uniq(["a1", "A1", "a01"], case_sensitive: true)
 | `NaturalSort.sort_index(array, case_sensitive: false, reverse: false)` | Return original indices in natural sort order |
 | `NaturalSort.group_by_prefix(array, case_sensitive: false)` | Group strings by non-numeric prefix with naturally sorted values |
 | `NaturalSort.uniq(array, case_sensitive: false)` | Deduplicate preserving first-occurrence order using natural equality |
+| `.sort_paths(paths, separator:, case_sensitive:, reverse:)` | Natural sort with path separator awareness |
 | `array.sort_naturally_by { \|x\| ... }` | Sort array by block result (via `ArrayRefinement`) |
 
 ## Development

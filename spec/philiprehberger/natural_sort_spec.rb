@@ -604,6 +604,62 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe '.sort_paths' do
+    it 'sorts paths by natural order of each segment' do
+      input = ['a/10/x', 'a/2/x', 'a/2/y']
+      expect(described_class.sort_paths(input)).to eq(['a/2/x', 'a/2/y', 'a/10/x'])
+    end
+
+    it 'handles mixed-depth paths' do
+      input = ['a/b/c', 'a/b', 'a/b/c/d', 'a']
+      expect(described_class.sort_paths(input)).to eq(['a', 'a/b', 'a/b/c', 'a/b/c/d'])
+    end
+
+    it 'handles duplicate path segments' do
+      input = ['a/a/a', 'a/a', 'a/a/b', 'a/a/a']
+      expect(described_class.sort_paths(input)).to eq(['a/a', 'a/a/a', 'a/a/a', 'a/a/b'])
+    end
+
+    it 'preserves trailing separators in output but compares by split segments' do
+      input = ['a/10/', 'a/2/', 'a/2']
+      result = described_class.sort_paths(input)
+      expect(result).to eq(['a/2', 'a/2/', 'a/10/'])
+    end
+
+    it 'is case insensitive by default' do
+      input = ['a/Banana', 'a/apple', 'a/cherry']
+      expect(described_class.sort_paths(input)).to eq(['a/apple', 'a/Banana', 'a/cherry'])
+    end
+
+    it 'supports case sensitive sorting' do
+      input = ['a/banana', 'a/Apple', 'a/cherry']
+      result = described_class.sort_paths(input, case_sensitive: true)
+      expect(result).to eq(['a/Apple', 'a/banana', 'a/cherry'])
+    end
+
+    it 'supports a custom Windows-style separator' do
+      input = ['C:\\docs\\file10', 'C:\\docs\\file2', 'C:\\docs\\file1']
+      result = described_class.sort_paths(input, separator: '\\')
+      expect(result).to eq(['C:\\docs\\file1', 'C:\\docs\\file2', 'C:\\docs\\file10'])
+    end
+
+    it 'reverses the final output order when reverse is true' do
+      input = ['a/10/x', 'a/2/x', 'a/2/y']
+      expect(described_class.sort_paths(input, reverse: true)).to eq(['a/10/x', 'a/2/y', 'a/2/x'])
+    end
+
+    it 'returns a new array and does not mutate the input' do
+      input = ['a/10/x', 'a/2/x', 'a/2/y']
+      result = described_class.sort_paths(input)
+      expect(input).to eq(['a/10/x', 'a/2/x', 'a/2/y'])
+      expect(result).not_to equal(input)
+    end
+
+    it 'returns an empty array for empty input' do
+      expect(described_class.sort_paths([])).to eq([])
+    end
+  end
+
   describe '.comparator' do
     it 'returns a Proc' do
       expect(described_class.comparator).to be_a(Proc)
