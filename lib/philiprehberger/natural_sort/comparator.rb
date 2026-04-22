@@ -248,6 +248,29 @@ module Philiprehberger
       result
     end
 
+    # Natural sort for separator-delimited paths.
+    #
+    # Splits each path on +separator+, naturally sorts the resulting segment arrays
+    # lexicographically, then returns the original path strings in sorted order.
+    # Trailing separators are preserved in the output; the split segments (with an
+    # empty trailing element) are used for comparison.
+    #
+    # @param paths [Array<String>] paths to sort
+    # @param separator [String] the path separator (default '/')
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @param reverse [Boolean] when true, reverses the final output order
+    # @return [Array<String>] a new array of paths in natural-sort order
+    def self.sort_paths(paths, separator: '/', case_sensitive: false, reverse: false)
+      decorated = paths.map do |path|
+        segments = path.to_s.split(separator, -1)
+        key = segments.map { |seg| natural_key(seg, case_sensitive: case_sensitive) }
+        [key, path]
+      end
+
+      sorted = decorated.sort_by(&:first).map(&:last)
+      reverse ? sorted.reverse : sorted
+    end
+
     # Refinement that adds sort_naturally_by to Array.
     #
     # Usage:
