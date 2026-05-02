@@ -85,6 +85,21 @@ module Philiprehberger
       reverse ? result.reverse : result
     end
 
+    # Sorts an array of strings in place using natural ordering.
+    #
+    # Mirrors Ruby's `Array#sort!` for callers who want to mutate the
+    # receiver rather than copy. Returns the same array.
+    #
+    # @param array [Array<String, nil>] the array to sort in place
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @param reverse [Boolean] when true, reverses the natural order
+    # @return [Array<String, nil>] the same array, now sorted in place
+    def self.sort!(array, case_sensitive: false, reverse: false)
+      array.sort! { |a, b| compare(a, b, case_sensitive: case_sensitive) }
+      array.reverse! if reverse
+      array
+    end
+
     # Sorts an array by the natural order of values returned by the block.
     #
     # @param array [Array] the array to sort

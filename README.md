@@ -213,6 +213,16 @@ Philiprehberger::NaturalSort.uniq(["a1", "A1", "a01"], case_sensitive: true)
 # => ["a1", "A1"]
 ```
 
+### In-Place Sorting
+
+Mutate an array directly when you do not need the original order:
+
+```ruby
+files = ["file10", "file2", "file1"]
+Philiprehberger::NaturalSort.sort!(files)
+files  # => ["file1", "file2", "file10"]
+```
+
 ### Sorting File Paths
 
 Natural-sort an array of paths by their separator-delimited segments. Useful for
@@ -231,6 +241,7 @@ Philiprehberger::NaturalSort.sort_paths(["C:\\docs\\file10", "C:\\docs\\file2"],
 | Method | Description |
 |--------|-------------|
 | `NaturalSort.sort(array, case_sensitive: false, reverse: false, ignore_case: false)` | Sort an array of strings in natural order |
+| `NaturalSort.sort!(array, case_sensitive: false, reverse: false)` | In-place natural sort; returns the same array |
 | `NaturalSort.sort_by(array, case_sensitive: false, reverse: false, ignore_case: false) { \|x\| ... }` | Sort by block result in natural order |
 | `NaturalSort.sort_stable(array, case_sensitive: false)` | Stable sort preserving original order for equal elements |
 | `NaturalSort.min(array, case_sensitive: false)` | Find the naturally smallest element |

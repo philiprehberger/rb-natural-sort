@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.10.0] - 2026-05-01
+
+### Added
+- `.sort!(array, case_sensitive:, reverse:)` — in-place natural sort that mirrors Ruby's `Array#sort!`; returns the same array reference
+
 ## [0.9.0] - 2026-04-21
 
 ### Added

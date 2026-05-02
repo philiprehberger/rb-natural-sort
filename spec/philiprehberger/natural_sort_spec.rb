@@ -85,6 +85,44 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe '.sort!' do
+    it 'mutates the array in place using natural ordering' do
+      input = %w[file10 file2 file1]
+      result = described_class.sort!(input)
+      expect(input).to eq(%w[file1 file2 file10])
+      expect(result).to be(input)
+    end
+
+    it 'sorts case-insensitively by default' do
+      input = %w[Banana apple Cherry]
+      described_class.sort!(input)
+      expect(input).to eq(%w[apple Banana Cherry])
+    end
+
+    it 'respects case_sensitive: true' do
+      input = %w[Banana apple Cherry]
+      described_class.sort!(input, case_sensitive: true)
+      expect(input).to eq(%w[Banana Cherry apple])
+    end
+
+    it 'reverses the order when reverse: true' do
+      input = %w[file2 file10 file1]
+      described_class.sort!(input, reverse: true)
+      expect(input).to eq(%w[file10 file2 file1])
+    end
+
+    it 'returns the same array reference' do
+      input = %w[c a b]
+      expect(described_class.sort!(input)).to be(input)
+    end
+
+    it 'handles an empty array' do
+      input = []
+      described_class.sort!(input)
+      expect(input).to eq([])
+    end
+  end
+
   describe '.sort with reverse' do
     it 'sorts strings in reverse natural order' do
       input = %w[cherry apple banana]
