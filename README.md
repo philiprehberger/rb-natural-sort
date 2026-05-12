@@ -246,6 +246,8 @@ Philiprehberger::NaturalSort.sort_paths(["C:\\docs\\file10", "C:\\docs\\file2"],
 | `NaturalSort.sort_stable(array, case_sensitive: false)` | Stable sort preserving original order for equal elements |
 | `NaturalSort.min(array, case_sensitive: false)` | Find the naturally smallest element |
 | `NaturalSort.max(array, case_sensitive: false)` | Find the naturally largest element |
+| `NaturalSort.first(array, n: 1, case_sensitive: false)` | Return the n naturally-smallest elements (single value when n==1) |
+| `NaturalSort.last(array, n: 1, case_sensitive: false)` | Return the n naturally-largest elements (single value when n==1) |
 | `NaturalSort.compare(a, b, case_sensitive: false)` | Compare two strings, returns -1, 0, or 1 |
 | `NaturalSort.collate(a, b, case_sensitive: false)` | Spaceship-style comparator returning -1, 0, or 1 |
 | `NaturalSort.comparator(case_sensitive: false)` | Returns a reusable comparison Proc |

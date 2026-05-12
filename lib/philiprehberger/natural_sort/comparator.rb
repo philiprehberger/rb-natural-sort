@@ -150,6 +150,50 @@ module Philiprehberger
       array.max { |a, b| compare(a, b, case_sensitive: case_sensitive) }
     end
 
+    # Returns the n naturally-smallest elements of an array.
+    #
+    # With the default +n: 1+, returns the single smallest element (or +nil+ for
+    # an empty array). With +n > 1+, returns an Array of up to +n+ elements in
+    # natural sort order (small-to-large). When +n+ exceeds the array size, the
+    # entire sorted array is returned.
+    #
+    # @param array [Array<String, nil>] the array to search
+    # @param n [Integer] number of elements to return (must be a non-negative Integer)
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [String, Array<String, nil>, nil] a single element when +n == 1+,
+    #   otherwise an Array of up to +n+ elements
+    # @raise [ArgumentError] when +n+ is not a non-negative Integer
+    def self.first(array, n: 1, case_sensitive: false)
+      raise ArgumentError, 'n must be a non-negative Integer' unless n.is_a?(Integer) && n >= 0
+
+      sorted = sort(array, case_sensitive: case_sensitive)
+      return sorted.first if n == 1
+
+      sorted.first(n)
+    end
+
+    # Returns the n naturally-largest elements of an array.
+    #
+    # With the default +n: 1+, returns the single largest element (or +nil+ for
+    # an empty array). With +n > 1+, returns an Array of up to +n+ elements in
+    # reverse natural sort order (large-to-small). When +n+ exceeds the array
+    # size, the entire reverse-sorted array is returned.
+    #
+    # @param array [Array<String, nil>] the array to search
+    # @param n [Integer] number of elements to return (must be a non-negative Integer)
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [String, Array<String, nil>, nil] a single element when +n == 1+,
+    #   otherwise an Array of up to +n+ elements
+    # @raise [ArgumentError] when +n+ is not a non-negative Integer
+    def self.last(array, n: 1, case_sensitive: false)
+      raise ArgumentError, 'n must be a non-negative Integer' unless n.is_a?(Integer) && n >= 0
+
+      sorted = sort(array, case_sensitive: case_sensitive)
+      return sorted.last if n == 1
+
+      sorted.last(n).reverse
+    end
+
     # Returns a sort key array usable with Ruby's built-in sort_by, min_by, max_by, etc.
     #
     # The key is an array of [type_flag, value] pairs where type_flag ensures

@@ -259,6 +259,112 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe '.first' do
+    it 'returns the naturally smallest element by default' do
+      input = %w[file10 file2 file1]
+      expect(described_class.first(input)).to eq('file1')
+    end
+
+    it 'returns an array of the n smallest elements when n > 1' do
+      input = %w[file10 file2 file1 file20 file3]
+      expect(described_class.first(input, n: 3)).to eq(%w[file1 file2 file3])
+    end
+
+    it 'returns the entire sorted array when n exceeds array length' do
+      input = %w[file10 file2 file1]
+      expect(described_class.first(input, n: 10)).to eq(%w[file1 file2 file10])
+    end
+
+    it 'returns an empty array when n is 0' do
+      input = %w[file10 file2 file1]
+      expect(described_class.first(input, n: 0)).to eq([])
+    end
+
+    it 'returns nil for an empty array with default n' do
+      expect(described_class.first([])).to be_nil
+    end
+
+    it 'returns an empty array for an empty array with n > 1' do
+      expect(described_class.first([], n: 2)).to eq([])
+    end
+
+    it 'honors case_sensitive when true' do
+      input = %w[banana Apple cherry]
+      expect(described_class.first(input, case_sensitive: true)).to eq('Apple')
+    end
+
+    it 'returns the n smallest with case_sensitive: true' do
+      input = %w[banana Apple cherry Date]
+      result = described_class.first(input, n: 2, case_sensitive: true)
+      expect(result).to eq(%w[Apple Date])
+    end
+
+    it 'raises ArgumentError for negative n' do
+      expect { described_class.first(%w[a b], n: -1) }.to raise_error(ArgumentError)
+    end
+
+    it 'raises ArgumentError for non-Integer n' do
+      expect { described_class.first(%w[a b], n: 1.5) }.to raise_error(ArgumentError)
+    end
+
+    it 'raises ArgumentError for nil n' do
+      expect { described_class.first(%w[a b], n: nil) }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '.last' do
+    it 'returns the naturally largest element by default' do
+      input = %w[file10 file2 file1]
+      expect(described_class.last(input)).to eq('file10')
+    end
+
+    it 'returns an array of the n largest elements when n > 1 in reverse natural order' do
+      input = %w[file10 file2 file1 file20 file3]
+      expect(described_class.last(input, n: 3)).to eq(%w[file20 file10 file3])
+    end
+
+    it 'returns the entire reverse-sorted array when n exceeds array length' do
+      input = %w[file10 file2 file1]
+      expect(described_class.last(input, n: 10)).to eq(%w[file10 file2 file1])
+    end
+
+    it 'returns an empty array when n is 0' do
+      input = %w[file10 file2 file1]
+      expect(described_class.last(input, n: 0)).to eq([])
+    end
+
+    it 'returns nil for an empty array with default n' do
+      expect(described_class.last([])).to be_nil
+    end
+
+    it 'returns an empty array for an empty array with n > 1' do
+      expect(described_class.last([], n: 2)).to eq([])
+    end
+
+    it 'honors case_sensitive when true' do
+      input = %w[banana Apple cherry]
+      expect(described_class.last(input, case_sensitive: true)).to eq('cherry')
+    end
+
+    it 'returns the n largest with case_sensitive: true' do
+      input = %w[banana Apple cherry Date]
+      result = described_class.last(input, n: 2, case_sensitive: true)
+      expect(result).to eq(%w[cherry banana])
+    end
+
+    it 'raises ArgumentError for negative n' do
+      expect { described_class.last(%w[a b], n: -1) }.to raise_error(ArgumentError)
+    end
+
+    it 'raises ArgumentError for non-Integer n' do
+      expect { described_class.last(%w[a b], n: 1.5) }.to raise_error(ArgumentError)
+    end
+
+    it 'raises ArgumentError for nil n' do
+      expect { described_class.last(%w[a b], n: nil) }.to raise_error(ArgumentError)
+    end
+  end
+
   describe '.compare' do
     it 'returns -1 when a sorts before b' do
       expect(described_class.compare('file1', 'file2')).to eq(-1)

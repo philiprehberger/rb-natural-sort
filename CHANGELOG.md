@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-05-12
+
+### Added
+- `NaturalSort.first(array, n: 1, case_sensitive: false)` returns the n naturally-smallest elements (or a single element when n is 1)
+- `NaturalSort.last(array, n: 1, case_sensitive: false)` returns the n naturally-largest elements (or a single element when n is 1)
+
 ## [0.10.0] - 2026-05-01
 
 ### Added
