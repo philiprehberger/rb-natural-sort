@@ -4,6 +4,8 @@
 [![Gem Version](https://badge.fury.io/rb/philiprehberger-natural_sort.svg)](https://rubygems.org/gems/philiprehberger-natural_sort)
 [![Last updated](https://img.shields.io/github/last-commit/philiprehberger/rb-natural-sort)](https://github.com/philiprehberger/rb-natural-sort/commits/main)
 
+![philiprehberger-natural_sort](https://raw.githubusercontent.com/philiprehberger/rb-natural-sort/main/package-card.webp)
+
 Human-friendly natural sorting — "file2" before "file10"
 
 ## Requirements
@@ -223,6 +225,24 @@ Philiprehberger::NaturalSort.sort!(files)
 files  # => ["file1", "file2", "file10"]
 ```
 
+### Lookup by Index
+
+`index` returns the first index whose value compares equal under natural ordering. Useful when scanning an unsorted collection without rearranging it. `position` is the binary-search variant for arrays already in natural sort order — O(log n).
+
+```ruby
+Philiprehberger::NaturalSort.index(["file10", "file2", "file1"], "file2")
+# => 1
+
+# Naturally-equal values (zero-padded) match
+Philiprehberger::NaturalSort.index(["a1", "b1"], "a01")
+# => 0
+
+# Binary search on a sorted array
+sorted = Philiprehberger::NaturalSort.sort(["file10", "file2", "file1"])
+Philiprehberger::NaturalSort.position(sorted, "file2")
+# => 1
+```
+
 ### Sorting File Paths
 
 Natural-sort an array of paths by their separator-delimited segments. Useful for
@@ -257,6 +277,8 @@ Philiprehberger::NaturalSort.sort_paths(["C:\\docs\\file10", "C:\\docs\\file2"],
 | `NaturalSort.sort_index(array, case_sensitive: false, reverse: false)` | Return original indices in natural sort order |
 | `NaturalSort.group_by_prefix(array, case_sensitive: false)` | Group strings by non-numeric prefix with naturally sorted values |
 | `NaturalSort.uniq(array, case_sensitive: false)` | Deduplicate preserving first-occurrence order using natural equality |
+| `NaturalSort.index(array, target, case_sensitive: false)` | First index in `array` whose value naturally equals `target`, or `nil` |
+| `NaturalSort.position(sorted_array, target, case_sensitive: false)` | Binary-search index in a pre-sorted array (O(log n)), or `nil` |
 | `.sort_paths(paths, separator:, case_sensitive:, reverse:)` | Natural sort with path separator awareness |
 | `array.sort_naturally_by { \|x\| ... }` | Sort array by block result (via `ArrayRefinement`) |
 

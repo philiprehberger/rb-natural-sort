@@ -330,6 +330,63 @@ module Philiprehberger
       reverse ? sorted.reverse : sorted
     end
 
+    # Returns the position +target+ would occupy in natural sort order
+    # within +array+, treating equality under natural comparison. Returns
+    # +nil+ when no element compares equal to +target+. Equivalent to a
+    # natural-sort variant of +Array#index+ that respects natural
+    # comparison semantics (e.g. +'a1'+ and +'a01'+ are equal).
+    #
+    # When multiple elements compare equal, the smallest index of an
+    # equal element is returned.
+    #
+    # @example
+    #   Philiprehberger::NaturalSort.index(['file10', 'file2', 'file1'], 'file2')
+    #   # => 1
+    #
+    # @param array [Array<String, nil>] the array to search
+    # @param target [String, nil] the value to locate
+    # @param case_sensitive [Boolean] whether comparison is case-sensitive
+    # @return [Integer, nil] the first index whose value naturally equals +target+, or nil
+    def self.index(array, target, case_sensitive: false)
+      array.each_with_index do |element, idx|
+        return idx if compare(element, target, case_sensitive: case_sensitive).zero?
+      end
+      nil
+    end
+
+    # Binary-search variant of {index} that assumes +sorted_array+ is
+    # already in natural sort order. Returns the index of an element that
+    # compares equal to +target+, or +nil+ when no such element exists.
+    # O(log n) lookup.
+    #
+    # Behaviour is undefined when +sorted_array+ is not actually sorted.
+    #
+    # @example
+    #   sorted = Philiprehberger::NaturalSort.sort(['file10', 'file2', 'file1'])
+    #   Philiprehberger::NaturalSort.position(sorted, 'file2')
+    #   # => 1
+    #
+    # @param sorted_array [Array<String, nil>] an array already in natural sort order
+    # @param target [String, nil] the value to locate
+    # @param case_sensitive [Boolean] whether comparison is case-sensitive
+    # @return [Integer, nil] index of an element that naturally equals +target+, or nil
+    def self.position(sorted_array, target, case_sensitive: false)
+      lo = 0
+      hi = sorted_array.length - 1
+      while lo <= hi
+        mid = (lo + hi) / 2
+        cmp = compare(sorted_array[mid], target, case_sensitive: case_sensitive)
+        return mid if cmp.zero?
+
+        if cmp.negative?
+          lo = mid + 1
+        else
+          hi = mid - 1
+        end
+      end
+      nil
+    end
+
     # Refinement that adds sort_naturally_by to Array.
     #
     # Usage:

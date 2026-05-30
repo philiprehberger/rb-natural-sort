@@ -820,4 +820,53 @@ RSpec.describe Philiprehberger::NaturalSort do
       expect(cmp.call('Apple', 'banana')).to be_negative
     end
   end
+
+  describe '.index' do
+    it 'returns the index of a matching element in an unsorted array' do
+      expect(described_class.index(%w[file10 file2 file1], 'file2')).to eq(1)
+    end
+
+    it 'returns nil when the target is not present' do
+      expect(described_class.index(%w[file10 file2 file1], 'file99')).to be_nil
+    end
+
+    it 'treats naturally-equal values (zero-padding) as equal' do
+      expect(described_class.index(%w[a1 b1], 'a01')).to eq(0)
+    end
+
+    it 'returns nil for an empty array' do
+      expect(described_class.index([], 'anything')).to be_nil
+    end
+
+    it 'respects case_sensitive: true' do
+      expect(described_class.index(%w[Apple apple banana], 'apple', case_sensitive: true)).to eq(1)
+    end
+  end
+
+  describe '.position' do
+    it 'finds a target in a naturally-sorted array via binary search' do
+      sorted = described_class.sort(%w[file10 file2 file1])
+      expect(described_class.position(sorted, 'file2')).to eq(1)
+    end
+
+    it 'returns nil when the target is not present' do
+      sorted = described_class.sort(%w[file10 file2 file1])
+      expect(described_class.position(sorted, 'file99')).to be_nil
+    end
+
+    it 'treats naturally-equal values as equal' do
+      sorted = described_class.sort(%w[a1 b1 c1])
+      expect(described_class.position(sorted, 'a01')).to eq(0)
+    end
+
+    it 'returns nil for an empty array' do
+      expect(described_class.position([], 'anything')).to be_nil
+    end
+
+    it 'finds elements at the boundaries' do
+      sorted = described_class.sort(%w[file10 file2 file1])
+      expect(described_class.position(sorted, 'file1')).to eq(0)
+      expect(described_class.position(sorted, 'file10')).to eq(2)
+    end
+  end
 end

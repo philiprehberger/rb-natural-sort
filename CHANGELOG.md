@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-05-29
+
+### Added
+- `NaturalSort.index(array, target, case_sensitive: false)` — returns the first index whose value compares equal to `target` under natural ordering, or `nil` if not present. Treats naturally-equal values (e.g. `'a1'` and `'a01'`) as a match.
+- `NaturalSort.position(sorted_array, target, case_sensitive: false)` — binary-search lookup for arrays already in natural sort order; O(log n); returns the index of an equal element or `nil`.
+
 ## [0.11.0] - 2026-05-12
 
 ### Added
