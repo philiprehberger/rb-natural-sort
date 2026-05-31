@@ -259,6 +259,31 @@ RSpec.describe Philiprehberger::NaturalSort do
     end
   end
 
+  describe '.minmax' do
+    it 'returns the naturally-smallest and naturally-largest elements' do
+      input = %w[file10 file2 file1]
+      expect(described_class.minmax(input)).to eq(%w[file1 file10])
+    end
+
+    it 'returns [nil, nil] for empty arrays' do
+      expect(described_class.minmax([])).to eq([nil, nil])
+    end
+
+    it 'returns [element, element] for single-element arrays' do
+      expect(described_class.minmax(%w[only])).to eq(%w[only only])
+    end
+
+    it 'respects case_sensitive: true' do
+      input = %w[banana Apple Cherry]
+      expect(described_class.minmax(input, case_sensitive: true)).to eq(%w[Apple banana])
+    end
+
+    it 'is case-insensitive by default' do
+      input = %w[Banana apple Cherry]
+      expect(described_class.minmax(input)).to eq(%w[apple Cherry])
+    end
+  end
+
   describe '.first' do
     it 'returns the naturally smallest element by default' do
       input = %w[file10 file2 file1]

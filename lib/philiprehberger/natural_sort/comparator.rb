@@ -150,6 +150,19 @@ module Philiprehberger
       array.max { |a, b| compare(a, b, case_sensitive: case_sensitive) }
     end
 
+    # Returns a two-element array `[min, max]` of the naturally-smallest and
+    # naturally-largest elements in a single Enumerable pass. Mirrors Ruby's
+    # `Enumerable#minmax`. Returns `[nil, nil]` for empty arrays.
+    #
+    # @param array [Array<String, nil>] the array to search
+    # @param case_sensitive [Boolean] whether text comparison is case-sensitive
+    # @return [Array<(String, String)>, Array<(nil, nil)>] [min, max] pair
+    def self.minmax(array, case_sensitive: false)
+      return [nil, nil] if array.empty?
+
+      array.minmax { |a, b| compare(a, b, case_sensitive: case_sensitive) }
+    end
+
     # Returns the n naturally-smallest elements of an array.
     #
     # With the default +n: 1+, returns the single smallest element (or +nil+ for

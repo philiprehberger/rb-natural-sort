@@ -109,6 +109,19 @@ Philiprehberger::NaturalSort.max(["file10", "file2", "file1"])
 # => "file10"
 ```
 
+### MinMax
+
+Get the naturally-smallest and naturally-largest elements in one pass. Mirrors
+Ruby's `Enumerable#minmax`. Returns `[nil, nil]` for empty arrays:
+
+```ruby
+Philiprehberger::NaturalSort.minmax(["file10", "file2", "file1"])
+# => ["file1", "file10"]
+
+Philiprehberger::NaturalSort.minmax([])
+# => [nil, nil]
+```
+
 ### Sort Key for Built-in Methods
 
 Use `natural_key` with Ruby's standard `sort_by`, `min_by`, `max_by`, `group_by`, and other Enumerable methods:
@@ -266,6 +279,7 @@ Philiprehberger::NaturalSort.sort_paths(["C:\\docs\\file10", "C:\\docs\\file2"],
 | `NaturalSort.sort_stable(array, case_sensitive: false)` | Stable sort preserving original order for equal elements |
 | `NaturalSort.min(array, case_sensitive: false)` | Find the naturally smallest element |
 | `NaturalSort.max(array, case_sensitive: false)` | Find the naturally largest element |
+| `NaturalSort.minmax(array, case_sensitive: false)` | Return `[min, max]` in a single pass (`[nil, nil]` for empty arrays) |
 | `NaturalSort.first(array, n: 1, case_sensitive: false)` | Return the n naturally-smallest elements (single value when n==1) |
 | `NaturalSort.last(array, n: 1, case_sensitive: false)` | Return the n naturally-largest elements (single value when n==1) |
 | `NaturalSort.compare(a, b, case_sensitive: false)` | Compare two strings, returns -1, 0, or 1 |
